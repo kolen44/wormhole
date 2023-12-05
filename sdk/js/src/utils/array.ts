@@ -1,13 +1,7 @@
 import { arrayify, zeroPad } from "@ethersproject/bytes";
 import { PublicKey } from "@solana/web3.js";
 import { hexValue, hexZeroPad, sha256, stripZeros } from "ethers/lib/utils";
-import { Provider as NearProvider } from "near-api-js/lib/providers";
 import { ethers } from "ethers";
-import {
-  hexToNativeAssetStringAlgorand,
-  nativeStringToHexAlgorand,
-  uint8ArrayToNativeStringAlgorand,
-} from "../algorand";
 import { canonicalAddress, humanAddress } from "../cosmos";
 import { buildTokenId } from "../cosmwasm/address";
 import { isNativeDenom } from "../terra";
@@ -37,10 +31,6 @@ import {
   CHAIN_ID_KUJIRA,
   CHAIN_ID_CELESTIA,
 } from "./consts";
-import { hashLookup } from "./near";
-import { getExternalAddressFromType, isValidAptosType } from "./aptos";
-import { isValidSuiAddress } from "@mysten/sui.js";
-import { isValidSuiType } from "../sui";
 
 /**
  *
@@ -107,7 +97,7 @@ export const tryUint8ArrayToNative = (
     const h = uint8ArrayToHex(a);
     return humanAddress("inj", isLikely20ByteCosmwasm(h) ? a.slice(-20) : a);
   } else if (chainId === CHAIN_ID_ALGORAND) {
-    return uint8ArrayToNativeStringAlgorand(a);
+    throw Error("uint8ArrayToNative: Algorand not supported yet.");
   } else if (chainId == CHAIN_ID_WORMCHAIN) {
     const h = uint8ArrayToHex(a);
     return humanAddress(
@@ -147,18 +137,6 @@ export const tryUint8ArrayToNative = (
   }
 };
 
-export const tryHexToNativeStringNear = async (
-  provider: NearProvider,
-  tokenBridge: string,
-  address: string
-): Promise<string> => {
-  const { found, value } = await hashLookup(provider, tokenBridge, address);
-  if (!found) {
-    throw new Error("Address not found");
-  }
-  return value;
-};
-
 /**
  *
  * Convert an address in a wormhole's 32-byte hex representation into a chain's native
@@ -167,10 +145,7 @@ export const tryHexToNativeStringNear = async (
  * @throws if address is not the right length for the given chain
  */
 export const tryHexToNativeAssetString = (h: string, c: ChainId): string =>
-  c === CHAIN_ID_ALGORAND
-    ? // Algorand assets are represented by their asset ids, not an address
-      hexToNativeAssetStringAlgorand(h)
-    : tryHexToNativeString(h, c);
+  tryHexToNativeString(h, c);
 
 /**
  *
@@ -262,7 +237,7 @@ export const tryNativeToHexString = (
   ) {
     return buildTokenId(chainId, address);
   } else if (chainId === CHAIN_ID_ALGORAND) {
-    return nativeStringToHexAlgorand(address);
+    throw Error("nativeToHexString: Algorand not supported yet.");
   } else if (chainId == CHAIN_ID_WORMCHAIN) {
     return uint8ArrayToHex(zeroPad(canonicalAddress(address), 32));
   } else if (chainId === CHAIN_ID_NEAR) {
@@ -278,22 +253,11 @@ export const tryNativeToHexString = (
   } else if (chainId === CHAIN_ID_CELESTIA) {
     throw Error("nativeToHexString: Celestia not supported yet.");
   } else if (chainId === CHAIN_ID_SUI) {
-    if (!isValidSuiType(address) && isValidSuiAddress(address)) {
-      return uint8ArrayToHex(
-        zeroPad(arrayify(address, { allowMissingPrefix: true }), 32)
-      );
-    }
     throw Error("nativeToHexString: Sui types not supported yet.");
   } else if (chainId === CHAIN_ID_BTC) {
     throw Error("nativeToHexString: Btc not supported yet.");
   } else if (chainId === CHAIN_ID_APTOS) {
-    if (isValidAptosType(address)) {
-      return getExternalAddressFromType(address);
-    }
-
-    return uint8ArrayToHex(
-      zeroPad(arrayify(address, { allowMissingPrefix: true }), 32)
-    );
+    throw Error("nativeToHexString: Aptos not supported yet.");
   } else if (chainId === CHAIN_ID_UNSET) {
     throw Error("nativeToHexString: Chain id unset");
   } else {
