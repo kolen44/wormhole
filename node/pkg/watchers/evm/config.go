@@ -20,6 +20,7 @@ type WatcherConfig struct {
 	WaitForConfirmations   bool               // (optional)
 	L1FinalizerRequired    watchers.NetworkID // (optional)
 	l1Finalizer            interfaces.L1Finalizer
+	CcqBackfillCache       bool
 }
 
 func (wc *WatcherConfig) GetNetworkID() watchers.NetworkID {
@@ -55,7 +56,7 @@ func (wc *WatcherConfig) Create(
 
 	var devMode bool = (env == common.UnsafeDevNet)
 
-	watcher := NewEthWatcher(wc.Rpc, eth_common.HexToAddress(wc.Contract), string(wc.NetworkID), wc.ChainID, msgC, setWriteC, obsvReqC, queryReqC, queryResponseC, devMode)
+	watcher := NewEthWatcher(wc.Rpc, eth_common.HexToAddress(wc.Contract), string(wc.NetworkID), wc.ChainID, msgC, setWriteC, obsvReqC, queryReqC, queryResponseC, devMode, wc.CcqBackfillCache)
 	watcher.SetWaitForConfirmations(wc.WaitForConfirmations)
 	watcher.SetL1Finalizer(wc.l1Finalizer)
 	return watcher, watcher.Run, nil
