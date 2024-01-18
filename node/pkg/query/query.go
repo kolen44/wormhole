@@ -151,6 +151,7 @@ func handleQueryRequestsImpl(
 		vaa.ChainIDArbitrumSepolia: {},
 		vaa.ChainIDBaseSepolia:     {},
 		vaa.ChainIDOptimismSepolia: {},
+		vaa.ChainIDPolygonSepolia:  {},
 	}
 
 	// But we don't want to allow CCQ if the chain is not enabled.

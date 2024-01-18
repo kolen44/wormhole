@@ -44,6 +44,7 @@ export const CHAINS = {
   base_sepolia: 10004,
   optimism_sepolia: 10005,
   holesky: 10006,
+  polygon_sepolia: 10007,
 } as const;
 
 export type ChainName = keyof typeof CHAINS;
@@ -79,6 +80,7 @@ export const EVMChainNames = [
   "base_sepolia",
   "optimism_sepolia",
   "holesky",
+  "polygon_sepolia",
 ] as const;
 export type EVMChainName = typeof EVMChainNames[number];
 
@@ -334,6 +336,12 @@ const MAINNET = {
     token_bridge: undefined,
     nft_bridge: undefined,
   },
+  polygon_sepolia: {
+    // This is testnet only.
+    core: undefined,
+    token_bridge: undefined,
+    nft_bridge: undefined,
+  },
   cosmoshub: {
     core: undefined,
     token_bridge: undefined,
@@ -569,6 +577,11 @@ const TESTNET = {
     token_bridge: "0x76d093BbaE4529a342080546cAFEec4AcbA59EC6",
     nft_bridge: "0xc8941d483c45eF8FB72E4d1F9dDE089C95fF8171",
   },
+  polygon_sepolia: {
+    core: "0x6b9C8671cdDC8dEab9c719bB87cBd3e782bA6a35",
+    token_bridge: "0xC7A204bDBFe983FCD8d8E61D02b475D4073fF97e",
+    nft_bridge: "0x23908A62110e21C04F3A4e011d24F901F911744A",
+  },
   cosmoshub: {
     core: undefined,
     token_bridge: undefined,
@@ -803,6 +816,11 @@ const DEVNET = {
     token_bridge: undefined,
     nft_bridge: undefined,
   },
+  polygon_sepolia: {
+    core: undefined,
+    token_bridge: undefined,
+    nft_bridge: undefined,
+  },
   cosmoshub: {
     core: undefined,
     token_bridge: undefined,
@@ -914,6 +932,7 @@ export const CHAIN_ID_ARBITRUM_SEPOLIA = CHAINS["arbitrum_sepolia"];
 export const CHAIN_ID_BASE_SEPOLIA = CHAINS["base_sepolia"];
 export const CHAIN_ID_OPTIMISM_SEPOLIA = CHAINS["optimism_sepolia"];
 export const CHAIN_ID_HOLESKY = CHAINS["holesky"];
+export const POLYGON_SEPOLIA = CHAINS["polygon_sepolia"];
 
 // This inverts the [[CHAINS]] object so that we can look up a chain by id
 export type ChainIdToName = {
